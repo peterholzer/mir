@@ -69,6 +69,7 @@ static inline void MIR_VARR_NO_RETURN mir_varr_error (const char *message) {
     va->els_num = 0;                                                                      \
     va->size = size;                                                                      \
     va->varr = (T *) malloc (size * sizeof (T));                                          \
+    if (va->varr == NULL) mir_varr_error ("varr: no memory");                             \
   }                                                                                       \
                                                                                           \
   static inline void VARR_OP (T, destroy) (VARR (T) * *varr) {                            \
@@ -117,6 +118,7 @@ static inline void MIR_VARR_NO_RETURN mir_varr_error (const char *message) {
     if (varr->size < size) {                                                              \
       size += size / 2;                                                                   \
       varr->varr = (T *) realloc (varr->varr, sizeof (T) * size);                         \
+      if (varr->varr == NULL) mir_varr_error ("varr: no memory");                         \
       varr->size = size;                                                                  \
       return 1;                                                                           \
     }                                                                                     \
@@ -126,6 +128,7 @@ static inline void MIR_VARR_NO_RETURN mir_varr_error (const char *message) {
   static inline void VARR_OP (T, tailor) (VARR (T) * varr, size_t size) {                 \
     VARR_ASSERT (varr && varr->varr, "tailor", T);                                        \
     if (varr->size != size) varr->varr = (T *) realloc (varr->varr, sizeof (T) * size);   \
+    if ((varr->varr == NULL) && (size != 0)) mir_varr_error ("varr: no memory");          \
     varr->els_num = varr->size = size;                                                    \
   }                                                                                       \
                                                                                           \
