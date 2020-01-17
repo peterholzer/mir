@@ -1228,9 +1228,8 @@ void MIR_finish_func (MIR_context_t ctx) {
     } else if (code == MIR_RET && actual_nops != curr_func->nres) {
       curr_func = NULL;
       (*error_func) (MIR_vararg_func_error,
-                     "in instruction '%s': number of operands in return does not correspond number "
-                     "of function returns. Expected %d, got %d",
-                     insn_descs[code].name, curr_func->nres, actual_nops);
+                     "in instruction '%s': number of operands in return does not correspond number of function returns. Got %lu",
+                     insn_descs[code].name, actual_nops);
     } else if (MIR_call_code_p (code))
       expr_p = FALSE;
     for (i = 0; i < actual_nops; i++) {
@@ -1274,9 +1273,7 @@ void MIR_finish_func (MIR_context_t ctx) {
           mir_assert (rd != NULL && insn->ops[i].u.mem.base == rd->reg);
           if (type2mode (rd->type) != MIR_OP_INT) {
             curr_func = NULL;
-            (*error_func) (MIR_reg_type_error,
-                           "in instruction '%s': base reg of non-integer type for operand #%d",
-                           insn_descs[code].name, i + 1);
+            (*error_func) (MIR_reg_type_error, "in instruction '%s': base reg of non-integer type for operand #%lu", insn_descs[code].name, i+1);
           }
         }
         if (insn->ops[i].u.mem.index != 0) {
@@ -1284,9 +1281,7 @@ void MIR_finish_func (MIR_context_t ctx) {
           mir_assert (rd != NULL && insn->ops[i].u.mem.index == rd->reg);
           if (type2mode (rd->type) != MIR_OP_INT) {
             curr_func = NULL;
-            (*error_func) (MIR_reg_type_error,
-                           "in instruction '%s': index reg of non-integer type for operand #%d",
-                           insn_descs[code].name, i + 1);
+            (*error_func) (MIR_reg_type_error, "in instruction '%s': index reg of non-integer type for operand #%lu", insn_descs[code].name, i+1);
           }
         }
         mode = type2mode (insn->ops[i].u.mem.type);
@@ -1307,15 +1302,12 @@ void MIR_finish_func (MIR_context_t ctx) {
       if (expected_mode != MIR_OP_UNDEF
           && (mode == MIR_OP_UINT ? MIR_OP_INT : mode) != expected_mode) {
         curr_func = NULL;
-        (*error_func) (MIR_op_mode_error,
-                       "in instruction '%s': unexpected operand mode for operand #%d. Got '%s', "
-                       "expected '%s'",
-                       insn_descs[code].name, i + 1, mode_str (mode), mode_str (expected_mode));
+        (*error_func) (MIR_op_mode_error, "in instruction '%s': unexpected operand mode for operand #%lu. Got '%s', expected '%s'",
+                                          insn_descs[code].name, i+1, type_str(mode), type_str(expected_mode));
       }
       if (out_p && !can_be_out_p) {
         curr_func = NULL;
-        (*error_func) (MIR_out_op_error, "in instruction '%s': wrong operand #%d for insn output",
-                       insn_descs[code].name, i + 1);
+        (*error_func) (MIR_out_op_error, "in instruction '%s': wrong operand #%lu for insn output", insn_descs[code].name, i+1);
       }
     }
   }
